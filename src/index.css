@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #F1F3F5;
+  --color-accent: #32E03F;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: #F8F9FA;
+  color: #090A0C;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* Leaflet light theme tweaks */
+.leaflet-container {
+  background: #F8F9FA !important;
+}
+
+.leaflet-tile-pane {
+  /* Cleaner look with subtle saturation reduction */
+  filter: saturate(0.8) contrast(0.95);
+}
+
+.leaflet-bar a {
+  background-color: #FFFFFF !important;
+  color: #090A0C !important;
+  border-bottom: 1px solid #F1F3F5 !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* Safe area handling */
+.safe-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
