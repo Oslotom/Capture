@@ -12,6 +12,8 @@ interface MapViewProps {
   currentPosition?: LatLng;
   onTerritoryClick?: (t: Territory) => void;
   className?: string;
+  zoom?: number;
+  zoomControl?: boolean;
 }
 
 // Helper to keep map in sync with state
@@ -23,13 +25,13 @@ function ChangeView({ center }: { center: LatLng }) {
   return null;
 }
 
-export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className }: MapViewProps) => {
+export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false }: MapViewProps) => {
   return (
     <MapContainer
       center={[center.lat, center.lng]}
-      zoom={15}
+      zoom={zoom}
       className={cn('w-full h-full z-0', className)}
-      zoomControl={false}
+      zoomControl={zoomControl}
       attributionControl={true}
     >
       <TileLayer

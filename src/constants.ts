@@ -2,7 +2,7 @@ import { Activity, Challenge, FeedItem, Territory, User } from "./types";
 
 // Bump whenever MOCK_TERRITORIES/MOCK_USER/MOCK_CHALLENGES change so
 // devices with stale locally-saved state pick up the new demo data.
-export const DEMO_DATA_VERSION = 3;
+export const DEMO_DATA_VERSION = 4;
 
 export const COLORS = {
   background: '#F8F9FA',
@@ -181,6 +181,83 @@ export const MOCK_TERRITORIES: Territory[] = [
       { lat: 59.389257, lng: 10.665610 },
       { lat: 59.389057, lng: 10.665610 },
       { lat: 59.389057, lng: 10.665210 },
+    ]
+  },
+
+  // 5 large regional territories (~3 km2 each), spread around the wider Moss area
+  {
+    id: 't10',
+    ownerId: 'user-2',
+    ownerName: 'Sarah',
+    area: 3.0,
+    color: COLORS.opponent1,
+    strokeColor: '#EF4444',
+    createdAt: Date.now() - 518400000,
+    polygon: [
+      { lat: 59.42278, lng: 10.61472 },
+      { lat: 59.42278, lng: 10.64528 },
+      { lat: 59.40722, lng: 10.64528 },
+      { lat: 59.40722, lng: 10.61472 },
+    ]
+  },
+  {
+    id: 't11',
+    ownerId: 'user-3',
+    ownerName: 'Jonas',
+    area: 3.0,
+    color: COLORS.opponent2,
+    strokeColor: '#8B5CF6',
+    createdAt: Date.now() - 604800000,
+    polygon: [
+      { lat: 59.45278, lng: 10.67472 },
+      { lat: 59.45278, lng: 10.70528 },
+      { lat: 59.43722, lng: 10.70528 },
+      { lat: 59.43722, lng: 10.67472 },
+    ]
+  },
+  {
+    id: 't12',
+    ownerId: 'user-4',
+    ownerName: 'Elena',
+    area: 3.0,
+    color: COLORS.opponent3,
+    strokeColor: '#F97316',
+    createdAt: Date.now() - 691200000,
+    polygon: [
+      { lat: 59.37778, lng: 10.68472 },
+      { lat: 59.37778, lng: 10.71528 },
+      { lat: 59.36222, lng: 10.71528 },
+      { lat: 59.36222, lng: 10.68472 },
+    ]
+  },
+  {
+    id: 't13',
+    ownerId: 'user-2',
+    ownerName: 'Sarah',
+    area: 3.0,
+    color: COLORS.opponent1,
+    strokeColor: '#EF4444',
+    createdAt: Date.now() - 777600000,
+    polygon: [
+      { lat: 59.46778, lng: 10.60472 },
+      { lat: 59.46778, lng: 10.63528 },
+      { lat: 59.45222, lng: 10.63528 },
+      { lat: 59.45222, lng: 10.60472 },
+    ]
+  },
+  {
+    id: 't14',
+    ownerId: 'user-3',
+    ownerName: 'Jonas',
+    area: 3.0,
+    color: COLORS.opponent2,
+    strokeColor: '#8B5CF6',
+    createdAt: Date.now() - 864000000,
+    polygon: [
+      { lat: 59.36778, lng: 10.61472 },
+      { lat: 59.36778, lng: 10.64528 },
+      { lat: 59.35222, lng: 10.64528 },
+      { lat: 59.35222, lng: 10.61472 },
     ]
   }
 ];

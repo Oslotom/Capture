@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, X, Map as MapIcon, Activity, Trophy, Users, User, ChevronRight } from 'lucide-react';
+import { Menu, X, Map as MapIcon, Globe, Activity, Trophy, Users, User, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { Button } from './UI';
@@ -14,6 +14,7 @@ interface SidebarProps {
 export const Sidebar = ({ isOpen, onClose, activeTab, onTabChange }: SidebarProps) => {
   const menuItems = [
     { id: 'home', icon: MapIcon, label: 'HOME' },
+    { id: 'territory', icon: Globe, label: 'TERRITORIE' },
     { id: 'activity', icon: Activity, label: 'ACTIVITY' },
     { id: 'compete', icon: Trophy, label: 'COMPETE' },
     { id: 'feed', icon: Users, label: 'FEED' },

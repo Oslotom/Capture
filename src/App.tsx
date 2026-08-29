@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { HomeScreen } from './views/HomeScreen';
+import { TerritoryScreen } from './views/TerritoryScreen';
 import { ActivityScreen } from './views/ActivityScreen';
 import { CompeteScreen } from './views/CompeteScreen';
 import { FeedScreen } from './views/FeedScreen';
@@ -22,6 +23,7 @@ export default function App() {
   const renderTab = () => {
     switch (activeTab) {
       case 'home': return <HomeScreen onTrackingChange={setIsTracking} />;
+      case 'territory': return <TerritoryScreen />;
       case 'activity': return <ActivityScreen />;
       case 'compete': return <CompeteScreen />;
       case 'feed': return <FeedScreen />;
