@@ -89,11 +89,11 @@ export const TerritoryScreen = () => {
         </div>
 
         {selected && (
-          <Card className="p-4 border-none shadow-sm bg-[#090A0C] text-white">
+          <Card className="p-4 border-none shadow-sm bg-accent/10 ring-1 ring-accent/30">
             <p className="text-[10px] text-accent font-black uppercase tracking-widest mb-1">Valgt område</p>
             <div className="flex items-center justify-between">
-              <p className="font-black italic text-lg">{selected.ownerName}</p>
-              <p className="font-black italic text-lg">{selected.area.toFixed(2)} <span className="text-[10px] font-bold not-italic text-white/60">KM²</span></p>
+              <p className="font-black italic text-lg text-black">{selected.ownerName}</p>
+              <p className="font-black italic text-lg text-black">{selected.area.toFixed(2)} <span className="text-[10px] font-bold not-italic text-textSecondary">KM²</span></p>
             </div>
           </Card>
         )}

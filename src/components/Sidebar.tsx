@@ -15,7 +15,7 @@ export const Sidebar = ({ isOpen, onClose, activeTab, onTabChange }: SidebarProp
   const menuItems = [
     { id: 'home', icon: MapIcon, label: 'HOME' },
     { id: 'territory', icon: Globe, label: 'TERRITORIE' },
-    { id: 'activity', icon: Activity, label: 'ACTIVITY' },
+    { id: 'myruns', icon: Activity, label: 'MY RUNS' },
     { id: 'compete', icon: Trophy, label: 'COMPETE' },
     { id: 'feed', icon: Users, label: 'FEED' },
     { id: 'profile', icon: User, label: 'PROFILE' },

@@ -14,6 +14,7 @@ interface MapViewProps {
   className?: string;
   zoom?: number;
   zoomControl?: boolean;
+  interactive?: boolean;
 }
 
 // Helper to keep map in sync with state
@@ -25,7 +26,7 @@ function ChangeView({ center }: { center: LatLng }) {
   return null;
 }
 
-export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false }: MapViewProps) => {
+export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false, interactive = true }: MapViewProps) => {
   return (
     <MapContainer
       center={[center.lat, center.lng]}
@@ -33,6 +34,12 @@ export const MapView = ({ center, territories, activeRoute, currentPosition, onT
       className={cn('w-full h-full z-0', className)}
       zoomControl={zoomControl}
       attributionControl={true}
+      dragging={interactive}
+      touchZoom={interactive}
+      scrollWheelZoom={interactive}
+      doubleClickZoom={interactive}
+      boxZoom={interactive}
+      keyboard={interactive}
     >
       <TileLayer
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"

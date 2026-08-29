@@ -3,40 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ActivityType, Activity, LatLng } from '../types';
 import { Button, Card } from '../components/UI';
-import { Play, Pause, Square, Trophy, Zap, Crosshair } from 'lucide-react';
+import { Play, Pause, Square, Trophy, Crosshair } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameState } from '../hooks/useGameState';
 import { MapView } from '../components/Map/MapView';
+import { PhoneMockup } from '../components/PhoneMockup';
 import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
-import { LineChart, BarChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const MOSS_CENTER: LatLng = { lat: 59.391757, lng: 10.666610 };
-
-const FALLBACK_CHART_DATA = [
-  { name: 'Mon', distance: 2.4, area: 0.5 },
-  { name: 'Tue', distance: 3.1, area: 0.8 },
-  { name: 'Wed', distance: 1.8, area: 0.3 },
-  { name: 'Thu', distance: 4.5, area: 1.2 },
-  { name: 'Fri', distance: 2.9, area: 0.7 },
-  { name: 'Sat', distance: 6.2, area: 1.8 },
-  { name: 'Sun', distance: 0, area: 0 },
-];
 
 export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking: boolean) => void }) => {
   const { user, territories, addActivity } = useGameState();
   const [isTracking, setIsTracking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [activeType, setActiveType] = useState<ActivityType>('RUN');
+  const activeType: ActivityType = 'RUN';
   const [activeRoute, setActiveRoute] = useState<LatLng[]>([]);
   const [elapsed, setElapsed] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [lastClaimedArea, setLastClaimedArea] = useState(0);
-  const [chartFilter, setChartFilter] = useState<'distance' | 'area'>('distance');
-  const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const watchIdRef = useRef<number | null>(null);
@@ -145,28 +133,6 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     setElapsed(0);
   };
 
-  const chartData = useMemo(() => {
-    const days: { name: string; distance: number; area: number }[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const key = d.toDateString();
-      const dayActivities = user.activities.filter(a => new Date(a.date).toDateString() === key);
-      days.push({
-        name: d.toLocaleDateString('en-US', { weekday: 'short' }),
-        distance: dayActivities.reduce((s, a) => s + a.distance, 0),
-        area: dayActivities.reduce((s, a) => s + a.territoryClaimed, 0),
-      });
-    }
-    const hasData = days.some(d => d.distance > 0 || d.area > 0);
-    return hasData ? days : FALLBACK_CHART_DATA;
-  }, [user.activities]);
-
-  const weekTotals = useMemo(() => ({
-    distance: chartData.reduce((s, d) => s + d.distance, 0),
-    area: chartData.reduce((s, d) => s + d.area, 0),
-  }), [chartData]);
-
   const leaderboard = [
     { id: '1', name: 'Alex', area: 12.8, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop' },
     { id: '2', name: 'Sarah', area: 10.4, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
@@ -178,9 +144,9 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
   return (
     <div className="min-h-full pb-32">
       {/* ===== HERO BANNER ===== */}
-      <div className="relative overflow-hidden bg-[#090A0C] text-white rounded-b-[32px] px-6 pt-20 pb-10">
+      <div className="relative overflow-hidden bg-white text-textPrimary rounded-b-[32px] px-6 pt-20 pb-10 shadow-[0_4px_30px_rgba(0,0,0,0.04)] border-b border-surface-secondary">
         {/* Decorative glow */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-accent/30 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 -left-16 w-56 h-56 bg-accent/10 rounded-full blur-3xl" />
 
         <div className="relative z-10">
@@ -192,30 +158,18 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
             </div>
           </div>
 
-          <h1 className="text-4xl font-black italic tracking-tighter leading-[1.05] mb-2">
-            READY TO<br />CLAIM TERRITORY?
-          </h1>
-          <p className="text-white/60 font-bold text-sm tracking-wide mb-6">
-            Every run expands your empire.
-          </p>
-
-          {/* Mode selector */}
-          <div className="flex gap-2 mb-4">
-            {(['RUN', 'WALK', 'BIKE'] as ActivityType[]).map(type => (
-              <button
-                key={type}
-                onClick={() => setActiveType(type)}
-                disabled={isTracking}
-                className={cn(
-                  "flex-1 py-2.5 rounded-full text-xs font-black italic tracking-widest transition-all border uppercase",
-                  activeType === type
-                    ? "bg-accent text-black border-accent shadow-md"
-                    : "bg-transparent text-white/60 border-white/20"
-                )}
-              >
-                {type}
-              </button>
-            ))}
+          <div className="flex items-start justify-between gap-2 mb-6">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-4xl font-black italic tracking-tighter leading-[1.05] mb-2">
+                READY TO<br />CLAIM TERRITORY?
+              </h1>
+              <p className="text-textSecondary font-bold text-sm tracking-wide">
+                Every run expands your empire.
+              </p>
+            </div>
+            <div className="flex-shrink-0 -mr-2 -mt-2">
+              <PhoneMockup />
+            </div>
           </div>
 
           <Button
@@ -232,97 +186,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
         </div>
       </div>
 
-      {/* ===== STATISTICS ===== */}
       <div className="p-6 space-y-8">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold italic">MY STATS</h2>
-            <div className="flex items-center gap-1 text-accent">
-              <Zap size={14} fill="currentColor" />
-              <span className="text-xs font-black">{user.xp} XP</span>
-            </div>
-          </div>
-
-          <Card className="p-6 space-y-6 border-none shadow-sm">
-            <div className="grid grid-cols-2 gap-4 border-b border-surface-secondary pb-6">
-              <div className="space-y-1">
-                <p className="text-[10px] text-textSecondary font-black italic uppercase tracking-widest">Distance (7d)</p>
-                <p className="text-2xl font-black italic text-black">{weekTotals.distance.toFixed(1)} <span className="text-xs font-bold not-italic uppercase">KM</span></p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[10px] text-textSecondary font-black italic uppercase tracking-widest">Captured (7d)</p>
-                <p className="text-2xl font-black italic text-black">{weekTotals.area.toFixed(2)} <span className="text-xs font-bold not-italic uppercase">KM²</span></p>
-              </div>
-            </div>
-
-            {/* Filters */}
-            <div className="flex items-center justify-between">
-              <div className="flex bg-surface-secondary rounded-lg p-1">
-                <button
-                  onClick={() => setChartFilter('distance')}
-                  className={cn("px-4 py-1.5 text-[10px] font-black tracking-widest rounded-md transition-all uppercase", chartFilter === 'distance' ? "bg-white text-black shadow-sm" : "text-textSecondary")}
-                >
-                  KM
-                </button>
-                <button
-                  onClick={() => setChartFilter('area')}
-                  className={cn("px-4 py-1.5 text-[10px] font-black tracking-widest rounded-md transition-all uppercase", chartFilter === 'area' ? "bg-white text-black shadow-sm" : "text-textSecondary")}
-                >
-                  KM²
-                </button>
-              </div>
-              <div className="flex bg-surface-secondary rounded-lg p-1">
-                <button
-                  onClick={() => setChartType('line')}
-                  className={cn("px-4 py-1.5 text-[10px] font-black tracking-widest rounded-md transition-all uppercase", chartType === 'line' ? "bg-white text-black shadow-sm" : "text-textSecondary")}
-                >
-                  Graph
-                </button>
-                <button
-                  onClick={() => setChartType('bar')}
-                  className={cn("px-4 py-1.5 text-[10px] font-black tracking-widest rounded-md transition-all uppercase", chartType === 'bar' ? "bg-white text-black shadow-sm" : "text-textSecondary")}
-                >
-                  Diagram
-                </button>
-              </div>
-            </div>
-
-            <div className="h-48 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                {chartType === 'line' ? (
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F3F5" vertical={false} />
-                    <XAxis dataKey="name" stroke="#6C757D" fontSize={10} tickLine={false} axisLine={false} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#F1F3F5', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                      itemStyle={{ color: '#32E03F' }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey={chartFilter}
-                      stroke="#32E03F"
-                      strokeWidth={4}
-                      dot={{ fill: '#32E03F', strokeWidth: 0, r: 4 }}
-                      activeDot={{ r: 6, strokeWidth: 0, fill: '#090A0C' }}
-                    />
-                  </LineChart>
-                ) : (
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F3F5" vertical={false} />
-                    <XAxis dataKey="name" stroke="#6C757D" fontSize={10} tickLine={false} axisLine={false} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#F1F3F5', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                      itemStyle={{ color: '#32E03F' }}
-                      cursor={{ fill: 'rgba(50, 224, 63, 0.08)' }}
-                    />
-                    <Bar dataKey={chartFilter} fill="#32E03F" radius={[8, 8, 0, 0]} maxBarSize={28} />
-                  </BarChart>
-                )}
-              </ResponsiveContainer>
-            </div>
-          </Card>
-        </div>
-
         {/* ===== LEADERBOARD ===== */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -358,7 +222,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="fixed inset-0 z-[150] bg-[#090A0C]"
+            className="fixed inset-0 z-[150] bg-background"
           >
             {/* Full-screen map */}
             <div className="absolute inset-0">
