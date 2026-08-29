@@ -54,7 +54,7 @@ export const MapView = ({ center, territories, activeRoute, currentPosition, onT
           positions={t.polygon.map(p => [p.lat, p.lng])}
           pathOptions={{
             fillColor: t.color,
-            fillOpacity: 0.3,
+            fillOpacity: 0.1,
             color: t.strokeColor,
             weight: 3
           }}

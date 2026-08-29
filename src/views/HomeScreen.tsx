@@ -6,10 +6,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { ActivityType, Activity, LatLng } from '../types';
 import { Button, Card } from '../components/UI';
-import { Play, Pause, Square, Trophy, Crosshair } from 'lucide-react';
+import { Play, Pause, Square, Trophy, Crosshair, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameState } from '../hooks/useGameState';
 import { MapView } from '../components/Map/MapView';
+import { RunSummaryScreen } from './RunSummaryScreen';
 import { PhoneMockup } from '../components/PhoneMockup';
 import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
@@ -20,11 +21,13 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
   const { user, territories, addActivity } = useGameState();
   const [isTracking, setIsTracking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const activeType: ActivityType = 'RUN';
   const [activeRoute, setActiveRoute] = useState<LatLng[]>([]);
   const [elapsed, setElapsed] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [lastClaimedArea, setLastClaimedArea] = useState(0);
+  const [completedActivity, setCompletedActivity] = useState<Activity | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const watchIdRef = useRef<number | null>(null);
@@ -131,6 +134,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     setIsPaused(false);
     setActiveRoute([]);
     setElapsed(0);
+    setCompletedActivity(newActivity);
   };
 
   const leaderboard = [
@@ -270,66 +274,75 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
             {/* Bottom control sheet */}
             <motion.div
               initial={{ y: 300 }}
-              animate={{ y: 0 }}
+              animate={{ y: isMinimized ? 240 : 0 }}
               exit={{ y: 400 }}
               transition={{ type: 'spring', damping: 28, stiffness: 260 }}
               className="absolute bottom-0 left-0 right-0 z-10 p-6 pb-10 bg-white rounded-t-[40px] shadow-[0_-20px_50px_rgba(0,0,0,0.15)]"
             >
-              <div className="w-10 h-1 bg-surface-secondary rounded-full mb-6 opacity-60 mx-auto" />
+              <div className="w-10 h-1 bg-surface-secondary rounded-full mb-6 opacity-60 mx-auto" onClick={() => setIsMinimized(!isMinimized)} />
+              <AnimatePresence>
+                {!isMinimized && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <div className="grid grid-cols-3 w-full gap-2 mb-8 text-center">
+                      <div className="space-y-0.5">
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Distance</p>
+                        <p className="text-xl font-black italic text-black tabular-nums">{(activeRoute.length * 0.05).toFixed(2)} <span className="text-[9px] font-bold not-italic">KM</span></p>
+                      </div>
+                      <div className="space-y-0.5 border-x border-surface-secondary">
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Duration</p>
+                        <p className="text-xl font-black italic text-black tabular-nums">{formatDuration(elapsed)}</p>
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Pace</p>
+                        <p className="text-xl font-black italic text-black">{calculatePace(elapsed, activeRoute.length * 0.05)}</p>
+                      </div>
+                    </div>
 
-              <div className="grid grid-cols-3 w-full gap-2 mb-8 text-center">
-                <div className="space-y-0.5">
-                  <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Distance</p>
-                  <p className="text-xl font-black italic text-black tabular-nums">{(activeRoute.length * 0.05).toFixed(2)} <span className="text-[9px] font-bold not-italic">KM</span></p>
-                </div>
-                <div className="space-y-0.5 border-x border-surface-secondary">
-                  <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Duration</p>
-                  <p className="text-xl font-black italic text-black tabular-nums">{formatDuration(elapsed)}</p>
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Pace</p>
-                  <p className="text-xl font-black italic text-black">{calculatePace(elapsed, activeRoute.length * 0.05)}</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3 w-full">
-                {isPaused ? (
-                  <>
-                    <Button
-                      variant="accent"
-                      size="lg"
-                      className="flex-1 h-16 text-sm font-black italic rounded-2xl border-none"
-                      onClick={() => setIsPaused(false)}
-                    >
-                      <span className="flex items-center gap-2"><Play size={16} fill="currentColor" /> RESUME</span>
-                    </Button>
-                    <Button
-                      size="lg"
-                      className="flex-1 h-16 bg-red-500 text-white border-none text-sm font-black italic rounded-2xl"
-                      onClick={handleFinish}
-                    >
-                      <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      size="lg"
-                      className="flex-1 h-16 bg-[#090A0C] text-white border-none text-sm font-black italic rounded-2xl"
-                      onClick={() => setIsPaused(true)}
-                    >
-                      <span className="flex items-center gap-2"><Pause size={16} fill="currentColor" /> PAUSE</span>
-                    </Button>
-                    <Button
-                      size="lg"
-                      className="flex-1 h-16 bg-accent text-black border-none text-sm font-black italic rounded-2xl"
-                      onClick={handleFinish}
-                    >
-                      <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
-                    </Button>
-                  </>
+                    <div className="flex gap-3 w-full">
+                      {isPaused ? (
+                        <>
+                          <Button
+                            variant="accent"
+                            size="lg"
+                            className="flex-1 h-16 text-sm font-black italic rounded-2xl border-none"
+                            onClick={() => setIsPaused(false)}
+                          >
+                            <span className="flex items-center gap-2"><Play size={16} fill="currentColor" /> RESUME</span>
+                          </Button>
+                          <Button
+                            size="lg"
+                            className="flex-1 h-16 bg-red-500 text-white border-none text-sm font-black italic rounded-2xl"
+                            onClick={handleFinish}
+                          >
+                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="lg"
+                            className="flex-1 h-16 bg-[#090A0C] text-white border-none text-sm font-black italic rounded-2xl"
+                            onClick={() => setIsPaused(true)}
+                          >
+                            <span className="flex items-center gap-2"><Pause size={16} fill="currentColor" /> PAUSE</span>
+                          </Button>
+                          <Button
+                            size="lg"
+                            className="flex-1 h-16 bg-accent text-black border-none text-sm font-black italic rounded-2xl"
+                            onClick={handleFinish}
+                          >
+                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </motion.div>
           </motion.div>
         )}
@@ -373,6 +386,12 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
           </motion.div>
         )}
       </AnimatePresence>
+      {completedActivity && (
+        <RunSummaryScreen 
+          activity={completedActivity} 
+          onClose={() => setCompletedActivity(null)} 
+        />
+      )}
     </div>
   );
 };
