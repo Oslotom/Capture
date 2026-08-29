@@ -37,23 +37,18 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+  const [gpsError, setGpsError] = useState<string | null>(null);
 
   useEffect(() => {
     onTrackingChange(isTracking);
   }, [isTracking, onTrackingChange]);
 
-  // Simulated movement for the demo (no map on home screen anymore)
+  // Timer runs independently of GPS updates
   useEffect(() => {
     if (isTracking && !isPaused) {
       timerRef.current = setInterval(() => {
         setElapsed(prev => prev + 1);
-        setActiveRoute(prev => {
-          const last = prev[prev.length - 1] ?? { lat: 51.505, lng: -0.09 };
-          return [...prev, {
-            lat: last.lat + (Math.random() - 0.5) * 0.0002,
-            lng: last.lng + (Math.random() - 0.5) * 0.0002,
-          }];
-        });
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -61,10 +56,52 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isTracking, isPaused]);
 
+  // Live GPS tracking of the route
+  useEffect(() => {
+    if (isTracking && !isPaused && 'geolocation' in navigator) {
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (pos) => {
+          setGpsError(null);
+          setActiveRoute(prev => [...prev, { lat: pos.coords.latitude, lng: pos.coords.longitude }]);
+        },
+        (err) => setGpsError(err.message),
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+      );
+    }
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+    };
+  }, [isTracking, isPaused]);
+
   const handleStart = () => {
-    setIsTracking(true);
-    setActiveRoute([]);
-    setElapsed(0);
+    if (!('geolocation' in navigator)) {
+      setGpsError('Geolocation is not supported on this device.');
+      return;
+    }
+    setGpsError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setActiveRoute([{ lat: pos.coords.latitude, lng: pos.coords.longitude }]);
+        setElapsed(0);
+        setIsTracking(true);
+      },
+      (err) => setGpsError(err.message),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  const handleRecenter = () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setGpsError(null);
+        setActiveRoute(prev => [...prev, { lat: pos.coords.latitude, lng: pos.coords.longitude }]);
+      },
+      (err) => setGpsError(err.message),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const handleFinish = () => {
@@ -369,13 +406,21 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
               </div>
             </div>
 
+            {gpsError && (
+              <div className="absolute top-20 left-6 right-6 z-10 pointer-events-none">
+                <div className="bg-red-500/95 backdrop-blur-md rounded-2xl px-4 py-2.5 shadow-lg text-white text-xs font-bold text-center">
+                  GPS error: {gpsError}
+                </div>
+              </div>
+            )}
+
             {/* Locate button */}
             <div className="absolute right-6 bottom-[340px] z-10">
               <Button
                 variant="secondary"
                 size="sm"
                 className="rounded-full w-12 h-12 p-0 shadow-xl bg-white text-black border-none"
-                onClick={() => {/* map follows the simulated position automatically */ }}
+                onClick={handleRecenter}
               >
                 <Crosshair size={20} />
               </Button>
