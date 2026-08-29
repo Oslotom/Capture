@@ -13,9 +13,11 @@ export interface LatLng {
 export interface Territory {
   id: string;
   ownerId: string;
+  ownerName: string;
   polygon: LatLng[];
   area: number; // in km2
   color: string;
+  strokeColor: string;
   createdAt: number;
 }
 

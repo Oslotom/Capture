@@ -14,6 +14,8 @@ import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
 import { LineChart, BarChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+const MOSS_CENTER: LatLng = { lat: 59.4370, lng: 10.6605 };
+
 const FALLBACK_CHART_DATA = [
   { name: 'Mon', distance: 2.4, area: 0.5 },
   { name: 'Tue', distance: 3.1, area: 0.8 },
@@ -25,7 +27,7 @@ const FALLBACK_CHART_DATA = [
 ];
 
 export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking: boolean) => void }) => {
-  const { user, addActivity } = useGameState();
+  const { user, territories, addActivity } = useGameState();
   const [isTracking, setIsTracking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [activeType, setActiveType] = useState<ActivityType>('RUN');
@@ -386,9 +388,9 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
             {/* Full-screen map */}
             <div className="absolute inset-0">
               <MapView
-                center={activeRoute[activeRoute.length - 1] ?? { lat: 51.505, lng: -0.09 }}
-                currentPosition={activeRoute[activeRoute.length - 1] ?? { lat: 51.505, lng: -0.09 }}
-                territories={[]}
+                center={activeRoute[activeRoute.length - 1] ?? MOSS_CENTER}
+                currentPosition={activeRoute[activeRoute.length - 1] ?? MOSS_CENTER}
+                territories={territories}
                 activeRoute={activeRoute}
               />
             </div>

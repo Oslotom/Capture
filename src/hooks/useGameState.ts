@@ -55,9 +55,11 @@ export function useGameState() {
         const newTerritory: Territory = {
             id: `t-${Date.now()}`,
             ownerId: user.id,
+            ownerName: user.name,
             polygon: activity.route,
             area: activity.territoryClaimed,
             color: 'rgba(0, 229, 255, 0.3)',
+            strokeColor: '#00E5FF',
             createdAt: Date.now()
         };
         setTerritories(prev => [...prev, newTerritory]);

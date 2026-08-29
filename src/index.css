@@ -11,12 +11,21 @@
   color-scheme: light;
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 body {
   background-color: #F8F9FA;
   color: #090A0C;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
   height: 100dvh;
+  overscroll-behavior: none;
+}
+
+main {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Leaflet light theme tweaks */
@@ -25,8 +34,8 @@ body {
 }
 
 .leaflet-tile-pane {
-  /* Cleaner look with subtle saturation reduction */
-  filter: saturate(0.8) contrast(0.95);
+  /* Light, low-contrast "Positron"-style look from plain OSM tiles */
+  filter: grayscale(0.55) brightness(1.12) contrast(0.9) saturate(0.6);
 }
 
 .leaflet-bar a {
@@ -38,6 +47,12 @@ body {
 .leaflet-control-zoom {
   border: none !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.75) !important;
+  font-size: 9px !important;
+  padding: 0 4px !important;
 }
 
 /* Safe area handling */

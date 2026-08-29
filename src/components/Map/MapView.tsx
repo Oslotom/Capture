@@ -30,12 +30,12 @@ export const MapView = ({ center, territories, activeRoute, currentPosition, onT
       zoom={15}
       className={cn('w-full h-full z-0', className)}
       zoomControl={false}
-      attributionControl={false}
+      attributionControl={true}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={20}
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        maxZoom={19}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <ChangeView center={center} />
 
@@ -46,7 +46,7 @@ export const MapView = ({ center, territories, activeRoute, currentPosition, onT
           pathOptions={{
             fillColor: t.color,
             fillOpacity: 0.3,
-            color: '#3B82F6', // Solid Blue stroke
+            color: t.strokeColor,
             weight: 3
           }}
           eventHandlers={{
