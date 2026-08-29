@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import { Territory, LatLng } from '../../types';
 import { COLORS } from '../../constants';
 import { useEffect } from 'react';
+import { cn } from '../../lib/utils';
 
 interface MapViewProps {
   center: LatLng;
@@ -10,6 +11,7 @@ interface MapViewProps {
   activeRoute?: LatLng[];
   currentPosition?: LatLng;
   onTerritoryClick?: (t: Territory) => void;
+  className?: string;
 }
 
 // Helper to keep map in sync with state
@@ -21,12 +23,12 @@ function ChangeView({ center }: { center: LatLng }) {
   return null;
 }
 
-export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick }: MapViewProps) => {
+export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className }: MapViewProps) => {
   return (
     <MapContainer
       center={[center.lat, center.lng]}
       zoom={15}
-      className="w-full h-full"
+      className={cn('w-full h-full z-0', className)}
       zoomControl={false}
       attributionControl={false}
     >

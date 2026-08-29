@@ -34,7 +34,7 @@ export default function App() {
     <div className="flex flex-col h-full bg-background text-textPrimary selection:bg-accent/30 max-w-md mx-auto relative overflow-hidden">
       {/* Floating Menu Button */}
       {!isTracking && (
-        <div className="fixed top-6 left-6 z-[150]">
+        <div className="fixed top-6 right-6 z-[202]">
           <Button
             variant="secondary"
             size="sm"
@@ -46,9 +46,9 @@ export default function App() {
         </div>
       )}
 
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
@@ -69,4 +69,3 @@ export default function App() {
     </div>
   );
 }
-
