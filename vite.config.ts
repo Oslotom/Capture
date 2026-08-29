@@ -5,6 +5,9 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // GitHub Pages serves the site from a subpath (/<repo-name>/), so use
+    // relative asset URLs. Vite handles this automatically with './'.
+    base: './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
