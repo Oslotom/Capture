@@ -1,6 +1,34 @@
 import { useState, useEffect } from 'react';
-import { User, Activity, Territory, Challenge } from '../types';
-import { MOCK_USER, MOCK_TERRITORIES, MOCK_CHALLENGES } from '../constants';
+import * as turf from '@turf/turf';
+import { User, Activity, Territory, LatLng, Challenge } from '../types';
+import { MOCK_USER, MOCK_TERRITORIES, MOCK_CHALLENGES, COLORS } from '../constants';
+
+function toClosedRing(polygon: LatLng[]): number[][] {
+  const ring = polygon.map(p => [p.lng, p.lat]);
+  const first = ring[0];
+  const last = ring[ring.length - 1];
+  if (first[0] !== last[0] || first[1] !== last[1]) ring.push(first);
+  return ring;
+}
+
+// A difference can leave a MultiPolygon behind (e.g. a run splits a territory in two).
+// We only store a single ring per territory, so keep the largest remaining piece.
+function largestRing(feature: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>): LatLng[] {
+  const rings = feature.geometry.type === 'Polygon'
+    ? [feature.geometry.coordinates[0]]
+    : feature.geometry.coordinates.map(poly => poly[0]);
+
+  let best = rings[0];
+  let bestArea = 0;
+  for (const ring of rings) {
+    const area = turf.area(turf.polygon([ring]));
+    if (area > bestArea) {
+      bestArea = area;
+      best = ring;
+    }
+  }
+  return best.map(([lng, lat]) => ({ lat, lng }));
+}
 
 export function useGameState() {
   const [user, setUser] = useState<User>(() => {
@@ -58,11 +86,38 @@ export function useGameState() {
             ownerName: user.name,
             polygon: activity.route,
             area: activity.territoryClaimed,
-            color: 'rgba(0, 229, 255, 0.3)',
-            strokeColor: '#00E5FF',
+            color: COLORS.territory,
+            strokeColor: '#3B82F6',
             createdAt: Date.now()
         };
-        setTerritories(prev => [...prev, newTerritory]);
+
+        // Claim any overlap with other players' territory: whatever the new
+        // loop covers is cut out of their polygon and becomes ours.
+        const newPolygon = turf.polygon([toClosedRing(activity.route)]);
+
+        setTerritories(prev => {
+          const remaining: Territory[] = [];
+          for (const t of prev) {
+            if (t.ownerId === user.id) {
+              remaining.push(t);
+              continue;
+            }
+            const existingPolygon = turf.polygon([toClosedRing(t.polygon)]);
+            if (!turf.booleanIntersects(newPolygon, existingPolygon)) {
+              remaining.push(t);
+              continue;
+            }
+            const remainder = turf.difference(turf.featureCollection([existingPolygon, newPolygon]));
+            if (!remainder) continue; // fully captured, drop it
+
+            const ring = largestRing(remainder);
+            const area = turf.area(remainder) / 1_000_000;
+            if (area < 0.001 || ring.length < 3) continue; // sliver left over, drop it
+
+            remaining.push({ ...t, polygon: ring, area });
+          }
+          return [...remaining, newTerritory];
+        });
     }
   };
 
