@@ -14,7 +14,7 @@ import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
 import { LineChart, BarChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const MOSS_CENTER: LatLng = { lat: 59.4370, lng: 10.6605 };
+const MOSS_CENTER: LatLng = { lat: 59.388991, lng: 10.653878 };
 
 const FALLBACK_CHART_DATA = [
   { name: 'Mon', distance: 2.4, area: 0.5 },
