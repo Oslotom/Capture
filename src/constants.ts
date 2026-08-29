@@ -1,5 +1,9 @@
 import { Activity, Challenge, FeedItem, Territory, User } from "./types";
 
+// Bump whenever MOCK_TERRITORIES/MOCK_USER/MOCK_CHALLENGES change so
+// devices with stale locally-saved state pick up the new demo data.
+export const DEMO_DATA_VERSION = 3;
+
 export const COLORS = {
   background: '#F8F9FA',
   surface: '#FFFFFF',
@@ -36,52 +40,53 @@ export const MOCK_USER: User = {
   rank: 3,
 };
 
-// Demo territories around Fuglevikveien 55, Dilling (59.388991 N, 10.653878 E)
+// Demo territories around Fuglevikveien, 1570 Dilling (59.391757 N, 10.666610 E)
+// Each is a ~500 m2 plot (roughly 22m x 22m)
 export const MOCK_TERRITORIES: Territory[] = [
   // Sarah — 3 captured areas
   {
     id: 't1',
     ownerId: 'user-2',
     ownerName: 'Sarah',
-    area: 0.42,
+    area: 0.0005,
     color: COLORS.opponent1,
     strokeColor: '#EF4444',
     createdAt: Date.now() - 172800000,
     polygon: [
-      { lat: 59.3820, lng: 10.6390 },
-      { lat: 59.3850, lng: 10.6420 },
-      { lat: 59.3835, lng: 10.6460 },
-      { lat: 59.3805, lng: 10.6430 },
+      { lat: 59.392757, lng: 10.664410 },
+      { lat: 59.392757, lng: 10.664810 },
+      { lat: 59.392557, lng: 10.664810 },
+      { lat: 59.392557, lng: 10.664410 },
     ]
   },
   {
     id: 't2',
     ownerId: 'user-2',
     ownerName: 'Sarah',
-    area: 0.58,
+    area: 0.0005,
     color: COLORS.opponent1,
     strokeColor: '#EF4444',
     createdAt: Date.now() - 259200000,
     polygon: [
-      { lat: 59.3880, lng: 10.6510 },
-      { lat: 59.3915, lng: 10.6545 },
-      { lat: 59.3895, lng: 10.6580 },
-      { lat: 59.3865, lng: 10.6555 },
+      { lat: 59.391857, lng: 10.666410 },
+      { lat: 59.391857, lng: 10.666810 },
+      { lat: 59.391657, lng: 10.666810 },
+      { lat: 59.391657, lng: 10.666410 },
     ]
   },
   {
     id: 't3',
     ownerId: 'user-2',
     ownerName: 'Sarah',
-    area: 0.35,
+    area: 0.0005,
     color: COLORS.opponent1,
     strokeColor: '#EF4444',
     createdAt: Date.now() - 345600000,
     polygon: [
-      { lat: 59.3935, lng: 10.6630 },
-      { lat: 59.3960, lng: 10.6655 },
-      { lat: 59.3945, lng: 10.6690 },
-      { lat: 59.3920, lng: 10.6665 },
+      { lat: 59.390657, lng: 10.668610 },
+      { lat: 59.390657, lng: 10.669010 },
+      { lat: 59.390457, lng: 10.669010 },
+      { lat: 59.390457, lng: 10.668610 },
     ]
   },
 
@@ -90,45 +95,45 @@ export const MOCK_TERRITORIES: Territory[] = [
     id: 't4',
     ownerId: 'user-3',
     ownerName: 'Jonas',
-    area: 0.48,
+    area: 0.0005,
     color: COLORS.opponent2,
     strokeColor: '#8B5CF6',
     createdAt: Date.now() - 216000000,
     polygon: [
-      { lat: 59.3805, lng: 10.6570 },
-      { lat: 59.3835, lng: 10.6600 },
-      { lat: 59.3815, lng: 10.6640 },
-      { lat: 59.3785, lng: 10.6610 },
+      { lat: 59.393657, lng: 10.667410 },
+      { lat: 59.393657, lng: 10.667810 },
+      { lat: 59.393457, lng: 10.667810 },
+      { lat: 59.393457, lng: 10.667410 },
     ]
   },
   {
     id: 't5',
     ownerId: 'user-3',
     ownerName: 'Jonas',
-    area: 0.39,
+    area: 0.0005,
     color: COLORS.opponent2,
     strokeColor: '#8B5CF6',
     createdAt: Date.now() - 302400000,
     polygon: [
-      { lat: 59.3870, lng: 10.6400 },
-      { lat: 59.3895, lng: 10.6425 },
-      { lat: 59.3880, lng: 10.6455 },
-      { lat: 59.3855, lng: 10.6430 },
+      { lat: 59.391257, lng: 10.663810 },
+      { lat: 59.391257, lng: 10.664210 },
+      { lat: 59.391057, lng: 10.664210 },
+      { lat: 59.391057, lng: 10.663810 },
     ]
   },
   {
     id: 't6',
     ownerId: 'user-3',
     ownerName: 'Jonas',
-    area: 0.6,
+    area: 0.0005,
     color: COLORS.opponent2,
     strokeColor: '#8B5CF6',
     createdAt: Date.now() - 388800000,
     polygon: [
-      { lat: 59.3950, lng: 10.6470 },
-      { lat: 59.3980, lng: 10.6500 },
-      { lat: 59.3960, lng: 10.6540 },
-      { lat: 59.3930, lng: 10.6510 },
+      { lat: 59.392257, lng: 10.669610 },
+      { lat: 59.392257, lng: 10.670010 },
+      { lat: 59.392057, lng: 10.670010 },
+      { lat: 59.392057, lng: 10.669610 },
     ]
   },
 
@@ -137,45 +142,45 @@ export const MOCK_TERRITORIES: Territory[] = [
     id: 't7',
     ownerId: 'user-4',
     ownerName: 'Elena',
-    area: 0.33,
+    area: 0.0005,
     color: COLORS.opponent3,
     strokeColor: '#F97316',
     createdAt: Date.now() - 259200000,
     polygon: [
-      { lat: 59.3900, lng: 10.6610 },
-      { lat: 59.3925, lng: 10.6635 },
-      { lat: 59.3910, lng: 10.6665 },
-      { lat: 59.3885, lng: 10.6640 },
+      { lat: 59.389857, lng: 10.667010 },
+      { lat: 59.389857, lng: 10.667410 },
+      { lat: 59.389657, lng: 10.667410 },
+      { lat: 59.389657, lng: 10.667010 },
     ]
   },
   {
     id: 't8',
     ownerId: 'user-4',
     ownerName: 'Elena',
-    area: 0.51,
+    area: 0.0005,
     color: COLORS.opponent3,
     strokeColor: '#F97316',
     createdAt: Date.now() - 345600000,
     polygon: [
-      { lat: 59.3945, lng: 10.6560 },
-      { lat: 59.3975, lng: 10.6590 },
-      { lat: 59.3955, lng: 10.6625 },
-      { lat: 59.3925, lng: 10.6595 },
+      { lat: 59.394057, lng: 10.663010 },
+      { lat: 59.394057, lng: 10.663410 },
+      { lat: 59.393857, lng: 10.663410 },
+      { lat: 59.393857, lng: 10.663010 },
     ]
   },
   {
     id: 't9',
     ownerId: 'user-4',
     ownerName: 'Elena',
-    area: 0.4,
+    area: 0.0005,
     color: COLORS.opponent3,
     strokeColor: '#F97316',
     createdAt: Date.now() - 432000000,
     polygon: [
-      { lat: 59.3830, lng: 10.6480 },
-      { lat: 59.3855, lng: 10.6505 },
-      { lat: 59.3840, lng: 10.6535 },
-      { lat: 59.3815, lng: 10.6510 },
+      { lat: 59.389257, lng: 10.665210 },
+      { lat: 59.389257, lng: 10.665610 },
+      { lat: 59.389057, lng: 10.665610 },
+      { lat: 59.389057, lng: 10.665210 },
     ]
   }
 ];

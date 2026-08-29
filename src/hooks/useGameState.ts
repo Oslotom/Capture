@@ -1,7 +1,18 @@
 import { useState, useEffect } from 'react';
 import * as turf from '@turf/turf';
 import { User, Activity, Territory, LatLng, Challenge } from '../types';
-import { MOCK_USER, MOCK_TERRITORIES, MOCK_CHALLENGES, COLORS } from '../constants';
+import { MOCK_USER, MOCK_TERRITORIES, MOCK_CHALLENGES, COLORS, DEMO_DATA_VERSION } from '../constants';
+
+// Discard locally-saved state left over from an older demo dataset so
+// everyone picks up new mock territories instead of a stale cached copy.
+function clearStaleDemoData() {
+  if (localStorage.getItem('terrain_demo_version') !== String(DEMO_DATA_VERSION)) {
+    localStorage.removeItem('terrain_user');
+    localStorage.removeItem('terrain_territories');
+    localStorage.removeItem('terrain_challenges');
+    localStorage.setItem('terrain_demo_version', String(DEMO_DATA_VERSION));
+  }
+}
 
 function toClosedRing(polygon: LatLng[]): number[][] {
   const ring = polygon.map(p => [p.lng, p.lat]);
@@ -31,6 +42,8 @@ function largestRing(feature: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPol
 }
 
 export function useGameState() {
+  clearStaleDemoData();
+
   const [user, setUser] = useState<User>(() => {
     const saved = localStorage.getItem('terrain_user');
     return saved ? JSON.parse(saved) : MOCK_USER;
