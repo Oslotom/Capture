@@ -6,8 +6,8 @@ import { useEffect } from 'react';
 import { cn } from '../../lib/utils';
 
 interface MapViewProps {
-  center: LatLng;
-  territories: Territory[];
+  center?: LatLng;
+  territories?: Territory[];
   activeRoute?: LatLng[];
   currentPosition?: LatLng;
   onTerritoryClick?: (t: Territory) => void;
@@ -26,7 +26,7 @@ function ChangeView({ center }: { center: LatLng }) {
   return null;
 }
 
-export const MapView = ({ center, territories, activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false, interactive = true }: MapViewProps) => {
+export const MapView = ({ center = { lat: 59.9139, lng: 10.7522 }, territories = [], activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false, interactive = true }: MapViewProps) => {
   return (
     <MapContainer
       center={[center.lat, center.lng]}

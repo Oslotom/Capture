@@ -6,19 +6,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { ActivityType, Activity, LatLng } from '../types';
 import { Button, Card } from '../components/UI';
-import { Play, Pause, Square, Trophy, Crosshair, ChevronDown, ChevronUp } from 'lucide-react';
+import { Play, Pause, Square, Trophy, Crosshair } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameState } from '../hooks/useGameState';
 import { MapView } from '../components/Map/MapView';
 import { RunSummaryScreen } from './RunSummaryScreen';
-import { PhoneMockup } from '../components/PhoneMockup';
 import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
 
 const MOSS_CENTER: LatLng = { lat: 59.391757, lng: 10.666610 };
 
 export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking: boolean) => void }) => {
-  const { user, territories, addActivity } = useGameState();
+  const { user, territories, feed, addActivity, completedActivity, setCompletedActivity } = useGameState();
   const [isTracking, setIsTracking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -27,7 +26,6 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
   const [elapsed, setElapsed] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [lastClaimedArea, setLastClaimedArea] = useState(0);
-  const [completedActivity, setCompletedActivity] = useState<Activity | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const watchIdRef = useRef<number | null>(null);
@@ -71,7 +69,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
 
   const handleStart = () => {
     if (!('geolocation' in navigator)) {
-      setGpsError('Geolocation is not supported on this device.');
+      setGpsError('Geolokalisering støttes ikke på denne enheten.');
       return;
     }
     setGpsError(null);
@@ -110,7 +108,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     points.push(points[0]);
     const polygon = turf.polygon([points as number[][]]);
     const area = turf.area(polygon) / 1_000_000;
-    const distance = activeRoute.length * 0.05;
+    const distance = turf.length(turf.lineString(points as number[][]));
 
     const newActivity: Activity = {
       id: `act-${Date.now()}`,
@@ -137,14 +135,6 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     setCompletedActivity(newActivity);
   };
 
-  const leaderboard = [
-    { id: '1', name: 'Alex', area: 12.8, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop' },
-    { id: '2', name: 'Sarah', area: 10.4, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' },
-    { id: 'user-1', name: 'You', area: user.territoryArea, avatar: user.avatar, isMe: true },
-  ].sort((a, b) => b.area - a.area);
-
-  const medal = (idx: number) => (idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`);
-
   return (
     <div className="min-h-full pb-32">
       {/* ===== HERO BANNER ===== */}
@@ -154,25 +144,16 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
         <div className="absolute -bottom-32 -left-16 w-56 h-56 bg-accent/10 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-8">
-            <img src={user.avatar} className="w-12 h-12 rounded-full border-2 border-accent" alt="avatar" />
-            <div>
-              <p className="text-[10px] text-accent font-black uppercase tracking-widest">LEVEL {user.level} · {user.levelName}</p>
-              <p className="text-lg font-black italic leading-none">HEY {user.name.toUpperCase()} 👋</p>
-            </div>
-          </div>
-
           <div className="flex items-start justify-between gap-2 mb-6">
             <div className="flex-1 min-w-0">
               <h1 className="text-4xl font-black italic tracking-tighter leading-[1.05] mb-2">
-                READY TO<br />CLAIM TERRITORY?
+                KLAR TIL Å<br />EROBRE OMRÅDE?
               </h1>
               <p className="text-textSecondary font-bold text-sm tracking-wide">
-                Every run expands your empire.
+                Hver løpetur utvider ditt imperium.
               </p>
             </div>
             <div className="flex-shrink-0 -mr-2 -mt-2">
-              <PhoneMockup />
             </div>
           </div>
 
@@ -191,30 +172,11 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
       </div>
 
       <div className="p-6 space-y-8">
-        {/* ===== LEADERBOARD ===== */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold italic">LEADERBOARD</h2>
-            <div className="flex items-center gap-1.5 text-accent">
-              <Trophy size={14} fill="currentColor" />
-              <span className="text-xs font-black uppercase tracking-widest">Territory</span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            {leaderboard.map((player, idx) => (
-              <Card key={player.id} className={cn("flex items-center gap-4 p-4 border-none shadow-sm", player.isMe ? "bg-accent/10 ring-1 ring-accent/30" : "bg-white")}>
-                <div className="w-8 text-center text-lg">
-                  {medal(idx)}
-                </div>
-                <img src={player.avatar} className="w-11 h-11 rounded-full border border-surface-secondary shadow-sm" alt="" />
-                <div className="flex-1">
-                  <p className="font-black italic text-sm text-black uppercase tracking-tight">{player.name}</p>
-                  {player.isMe && <p className="text-[9px] text-accent font-black uppercase tracking-widest">You</p>}
-                </div>
-                <p className="font-black italic text-base text-black">{player.area.toFixed(1)} <span className="text-[8px] uppercase not-italic text-textSecondary font-bold">KM²</span></p>
-              </Card>
-            ))}
-          </div>
+          <h2 className="text-xl font-bold italic">DINE OMRÅDER</h2>
+          <Card className="h-64 w-full overflow-hidden border-none shadow-sm">
+            <MapView territories={territories} />
+          </Card>
         </div>
       </div>
 
@@ -243,7 +205,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
               <div className="bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg pointer-events-auto flex items-center gap-2">
                 <span className={cn("w-2.5 h-2.5 rounded-full", isPaused ? "bg-amber-400" : "bg-accent animate-pulse")} />
                 <span className="text-[10px] font-black uppercase tracking-widest text-black">
-                  {isPaused ? 'PAUSED' : 'TRACKING'} · {activeType}
+                  {isPaused ? 'PAUSE' : 'SPORER'} · {activeType}
                 </span>
               </div>
               <div className="bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg pointer-events-auto">
@@ -254,7 +216,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
             {gpsError && (
               <div className="absolute top-20 left-6 right-6 z-10 pointer-events-none">
                 <div className="bg-red-500/95 backdrop-blur-md rounded-2xl px-4 py-2.5 shadow-lg text-white text-xs font-bold text-center">
-                  GPS error: {gpsError}
+                  GPS-feil: {gpsError}
                 </div>
               </div>
             )}
@@ -289,15 +251,15 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
                   >
                     <div className="grid grid-cols-3 w-full gap-2 mb-8 text-center">
                       <div className="space-y-0.5">
-                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Distance</p>
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Distanse</p>
                         <p className="text-xl font-black italic text-black tabular-nums">{(activeRoute.length * 0.05).toFixed(2)} <span className="text-[9px] font-bold not-italic">KM</span></p>
                       </div>
                       <div className="space-y-0.5 border-x border-surface-secondary">
-                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Duration</p>
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Varighet</p>
                         <p className="text-xl font-black italic text-black tabular-nums">{formatDuration(elapsed)}</p>
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Pace</p>
+                        <p className="text-[9px] text-textSecondary font-black uppercase tracking-widest">Fart</p>
                         <p className="text-xl font-black italic text-black">{calculatePace(elapsed, activeRoute.length * 0.05)}</p>
                       </div>
                     </div>
@@ -311,14 +273,14 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
                             className="flex-1 h-16 text-sm font-black italic rounded-2xl border-none"
                             onClick={() => setIsPaused(false)}
                           >
-                            <span className="flex items-center gap-2"><Play size={16} fill="currentColor" /> RESUME</span>
+                            <span className="flex items-center gap-2"><Play size={16} fill="currentColor" /> FORTSETT</span>
                           </Button>
                           <Button
                             size="lg"
                             className="flex-1 h-16 bg-red-500 text-white border-none text-sm font-black italic rounded-2xl"
                             onClick={handleFinish}
                           >
-                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
+                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> AVSLUTT</span>
                           </Button>
                         </>
                       ) : (
@@ -335,7 +297,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
                             className="flex-1 h-16 bg-accent text-black border-none text-sm font-black italic rounded-2xl"
                             onClick={handleFinish}
                           >
-                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> FINISH</span>
+                            <span className="flex items-center gap-2"><Square size={14} fill="currentColor" /> AVSLUTT</span>
                           </Button>
                         </>
                       )}
@@ -365,12 +327,12 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
               <div className="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-accent/20">
                 <Trophy size={48} className="text-accent" />
               </div>
-              <h2 className="text-4xl font-black mb-2 italic text-black">NEW TERRITORY</h2>
+              <h2 className="text-4xl font-black mb-2 italic text-black">NYTT OMRÅDE</h2>
               <p className="text-accent text-6xl font-black mb-8">+{lastClaimedArea.toFixed(2)} <span className="text-2xl">KM²</span></p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="bg-surface-secondary rounded-2xl p-4">
-                  <p className="text-[10px] text-textSecondary font-bold mb-1">XP EARNED</p>
+                  <p className="text-[10px] text-textSecondary font-bold mb-1">XP TJENT</p>
                   <p className="text-xl font-black italic">+500</p>
                 </div>
                 <div className="bg-surface-secondary rounded-2xl p-4">
@@ -380,18 +342,20 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
               </div>
 
               <Button variant="accent" size="xl" onClick={() => setShowCelebration(false)}>
-                KEEP GOING
+                FORTSETT
               </Button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-      {completedActivity && (
-        <RunSummaryScreen 
-          activity={completedActivity} 
-          onClose={() => setCompletedActivity(null)} 
-        />
-      )}
+      <AnimatePresence>
+        {completedActivity && (
+          <RunSummaryScreen
+            activity={completedActivity}
+            onClose={() => setCompletedActivity(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

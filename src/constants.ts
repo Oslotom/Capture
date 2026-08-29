@@ -18,11 +18,11 @@ export const COLORS = {
 };
 
 export const LEVELS = [
-  "Explorer",
-  "Scout",
-  "Runner",
-  "Conqueror",
-  "Territory Master"
+  "Utforsker",
+  "Speider",
+  "Løper",
+  "Erobrer",
+  "Områdemester"
 ];
 
 // Mock Data
@@ -31,7 +31,7 @@ export const MOCK_USER: User = {
   name: 'Alex Rivera',
   avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&h=150&fit=crop',
   level: 3,
-  levelName: 'Runner',
+  levelName: 'Løper',
   xp: 2450,
   nextLevelXp: 5000,
   territoryArea: 8.7,
@@ -155,8 +155,8 @@ export const MOCK_TERRITORIES: Territory[] = [
 export const MOCK_CHALLENGES: Challenge[] = [
   {
     id: 'c1',
-    title: 'CLAIM 5 KM²',
-    description: 'Enclose more territory to reach the goal.',
+    title: 'EROBRE 5 KM²',
+    description: 'Inneslutt mer territorium for å nå målet.',
     progress: 3.7,
     target: 5.0,
     unit: 'km²',
@@ -165,8 +165,8 @@ export const MOCK_CHALLENGES: Challenge[] = [
   },
   {
     id: 'c2',
-    title: 'WEEKLY DISTANCE',
-    description: 'Run 20 km this week.',
+    title: 'UKENTLIG DISTANSE',
+    description: 'Løp 20 km denne uken.',
     progress: 12.4,
     target: 20.0,
     unit: 'km',
@@ -183,7 +183,7 @@ export const MOCK_FEED: FeedItem[] = [
     userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
     type: 'CLAIM',
     timestamp: Date.now() - 7200000,
-    content: 'claimed 1.2 km²',
+    content: 'erobret 1.2 km²',
     stats: { area: 1.2 }
   },
   {
@@ -193,7 +193,7 @@ export const MOCK_FEED: FeedItem[] = [
     userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
     type: 'ACTIVITY',
     timestamp: Date.now() - 14400000,
-    content: 'completed a 10.4 km run',
+    content: 'fullførte en 10.4 km løpetur',
     stats: { distance: 10.4, time: '52:10' }
   }
 ];

@@ -59,6 +59,8 @@ export function useGameState() {
     return saved ? JSON.parse(saved) : MOCK_CHALLENGES;
   });
 
+  const [completedActivity, setCompletedActivity] = useState<Activity | null>(null);
+
   useEffect(() => {
     localStorage.setItem('terrain_user', JSON.stringify(user));
   }, [user]);
@@ -139,6 +141,8 @@ export function useGameState() {
     territories,
     challenges,
     addActivity,
-    setUser
+    setUser,
+    completedActivity,
+    setCompletedActivity,
   };
 }
