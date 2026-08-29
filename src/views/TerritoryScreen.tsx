@@ -40,7 +40,7 @@ export const TerritoryScreen = () => {
           <MapView
             center={selected ? selected.polygon[0] : OVERVIEW_CENTER}
             territories={territories}
-            zoom={11}
+            zoom={12}
             zoomControl
             onTerritoryClick={setSelected}
           />

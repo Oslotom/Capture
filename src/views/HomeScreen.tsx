@@ -6,7 +6,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { ActivityType, Activity, LatLng } from '../types';
 import { Button, Card } from '../components/UI';
-import { Play, Pause, Square, Trophy, Zap, TrendingUp, Flame, MapPin, Crosshair } from 'lucide-react';
+import { Play, Pause, Square, Trophy, Zap, Crosshair } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameState } from '../hooks/useGameState';
 import { MapView } from '../components/Map/MapView';
@@ -198,31 +198,6 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
           <p className="text-white/60 font-bold text-sm tracking-wide mb-6">
             Every run expands your empire.
           </p>
-
-          {/* Hero stat chips */}
-          <div className="flex gap-3 mb-8">
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <div className="flex items-center gap-1.5 text-accent mb-1">
-                <TrendingUp size={12} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Total KM</span>
-              </div>
-              <p className="text-2xl font-black italic">{user.totalDistance.toFixed(1)}</p>
-            </div>
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <div className="flex items-center gap-1.5 text-accent mb-1">
-                <MapPin size={12} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Captured</span>
-              </div>
-              <p className="text-2xl font-black italic">{user.territoryArea.toFixed(2)} <span className="text-[10px] font-bold not-italic text-white/60">KM²</span></p>
-            </div>
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-              <div className="flex items-center gap-1.5 text-accent mb-1">
-                <Flame size={12} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Rank</span>
-              </div>
-              <p className="text-2xl font-black italic">#{user.rank}</p>
-            </div>
-          </div>
 
           {/* Mode selector */}
           <div className="flex gap-2 mb-4">

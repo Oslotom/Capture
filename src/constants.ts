@@ -2,7 +2,7 @@ import { Activity, Challenge, FeedItem, Territory, User } from "./types";
 
 // Bump whenever MOCK_TERRITORIES/MOCK_USER/MOCK_CHALLENGES change so
 // devices with stale locally-saved state pick up the new demo data.
-export const DEMO_DATA_VERSION = 4;
+export const DEMO_DATA_VERSION = 5;
 
 export const COLORS = {
   background: '#F8F9FA',
@@ -12,9 +12,9 @@ export const COLORS = {
   textSecondary: '#6C757D',
   accent: '#32E03F', // Vibrant Lime
   territory: 'rgba(59, 130, 246, 0.25)', // Blue as in image
-  opponent1: 'rgba(239, 68, 68, 0.2)',
-  opponent2: 'rgba(139, 92, 246, 0.2)',
-  opponent3: 'rgba(249, 115, 22, 0.2)',
+  opponent1: 'rgba(244, 63, 94, 0.22)', // Rose
+  opponent2: 'rgba(20, 184, 166, 0.22)', // Teal
+  opponent3: 'rgba(139, 92, 246, 0.22)', // Violet
 };
 
 export const LEVELS = [
@@ -40,224 +40,114 @@ export const MOCK_USER: User = {
   rank: 3,
 };
 
-// Demo territories around Fuglevikveien, 1570 Dilling (59.391757 N, 10.666610 E)
-// Each is a ~500 m2 plot (roughly 22m x 22m)
+// Demo territories around the wider Moss/Dilling area — organic multi-sided
+// polygons (not squares), ~7.6 km2 total, with a few areas overlapping
+// between owners to show contested ground.
 export const MOCK_TERRITORIES: Territory[] = [
-  // Sarah — 3 captured areas
   {
     id: 't1',
     ownerId: 'user-2',
     ownerName: 'Sarah',
-    area: 0.0005,
+    area: 1.709,
     color: COLORS.opponent1,
-    strokeColor: '#EF4444',
+    strokeColor: '#F43F5E',
     createdAt: Date.now() - 172800000,
     polygon: [
-      { lat: 59.392757, lng: 10.664410 },
-      { lat: 59.392757, lng: 10.664810 },
-      { lat: 59.392557, lng: 10.664810 },
-      { lat: 59.392557, lng: 10.664410 },
+      { lat: 59.411695, lng: 10.649829 },
+      { lat: 59.409729, lng: 10.667013 },
+      { lat: 59.403753, lng: 10.661894 },
+      { lat: 59.399589, lng: 10.656302 },
+      { lat: 59.398162, lng: 10.646372 },
+      { lat: 59.403753, lng: 10.634323 },
+      { lat: 59.409314, lng: 10.642186 },
     ]
   },
   {
     id: 't2',
     ownerId: 'user-2',
     ownerName: 'Sarah',
-    area: 0.0005,
+    area: 0.967,
     color: COLORS.opponent1,
-    strokeColor: '#EF4444',
+    strokeColor: '#F43F5E',
     createdAt: Date.now() - 259200000,
     polygon: [
-      { lat: 59.391857, lng: 10.666410 },
-      { lat: 59.391857, lng: 10.666810 },
-      { lat: 59.391657, lng: 10.666810 },
-      { lat: 59.391657, lng: 10.666410 },
+      { lat: 59.38929, lng: 10.673341 },
+      { lat: 59.386028, lng: 10.681997 },
+      { lat: 59.382799, lng: 10.685933 },
+      { lat: 59.379508, lng: 10.675029 },
+      { lat: 59.381093, lng: 10.663664 },
+      { lat: 59.387746, lng: 10.662815 },
     ]
   },
   {
     id: 't3',
-    ownerId: 'user-2',
-    ownerName: 'Sarah',
-    area: 0.0005,
-    color: COLORS.opponent1,
-    strokeColor: '#EF4444',
-    createdAt: Date.now() - 345600000,
+    ownerId: 'user-3',
+    ownerName: 'Jonas',
+    area: 1.63,
+    color: COLORS.opponent2,
+    strokeColor: '#14B8A6',
+    createdAt: Date.now() - 216000000,
     polygon: [
-      { lat: 59.390657, lng: 10.668610 },
-      { lat: 59.390657, lng: 10.669010 },
-      { lat: 59.390457, lng: 10.669010 },
-      { lat: 59.390457, lng: 10.668610 },
+      { lat: 59.409664, lng: 10.664578 },
+      { lat: 59.405956, lng: 10.671891 },
+      { lat: 59.402467, lng: 10.677283 },
+      { lat: 59.396242, lng: 10.673208 },
+      { lat: 59.397443, lng: 10.662501 },
+      { lat: 59.397599, lng: 10.652228 },
+      { lat: 59.401459, lng: 10.647096 },
+      { lat: 59.406173, lng: 10.652834 },
     ]
   },
-
-  // Jonas — 3 captured areas
   {
     id: 't4',
     ownerId: 'user-3',
     ownerName: 'Jonas',
-    area: 0.0005,
+    area: 0.985,
     color: COLORS.opponent2,
-    strokeColor: '#8B5CF6',
-    createdAt: Date.now() - 216000000,
+    strokeColor: '#14B8A6',
+    createdAt: Date.now() - 302400000,
     polygon: [
-      { lat: 59.393657, lng: 10.667410 },
-      { lat: 59.393657, lng: 10.667810 },
-      { lat: 59.393457, lng: 10.667810 },
-      { lat: 59.393457, lng: 10.667410 },
+      { lat: 59.426748, lng: 10.640979 },
+      { lat: 59.421833, lng: 10.653038 },
+      { lat: 59.418144, lng: 10.652361 },
+      { lat: 59.416143, lng: 10.643397 },
+      { lat: 59.417507, lng: 10.633595 },
+      { lat: 59.42358, lng: 10.631416 },
     ]
   },
   {
     id: 't5',
-    ownerId: 'user-3',
-    ownerName: 'Jonas',
-    area: 0.0005,
-    color: COLORS.opponent2,
+    ownerId: 'user-4',
+    ownerName: 'Elena',
+    area: 1.139,
+    color: COLORS.opponent3,
     strokeColor: '#8B5CF6',
-    createdAt: Date.now() - 302400000,
+    createdAt: Date.now() - 388800000,
     polygon: [
-      { lat: 59.391257, lng: 10.663810 },
-      { lat: 59.391257, lng: 10.664210 },
-      { lat: 59.391057, lng: 10.664210 },
-      { lat: 59.391057, lng: 10.663810 },
+      { lat: 59.427698, lng: 10.643072 },
+      { lat: 59.424912, lng: 10.651779 },
+      { lat: 59.421214, lng: 10.659702 },
+      { lat: 59.4185, lng: 10.651414 },
+      { lat: 59.416635, lng: 10.63612 },
+      { lat: 59.421115, lng: 10.632342 },
+      { lat: 59.42629, lng: 10.637115 },
     ]
   },
   {
     id: 't6',
-    ownerId: 'user-3',
-    ownerName: 'Jonas',
-    area: 0.0005,
-    color: COLORS.opponent2,
+    ownerId: 'user-4',
+    ownerName: 'Elena',
+    area: 1.189,
+    color: COLORS.opponent3,
     strokeColor: '#8B5CF6',
-    createdAt: Date.now() - 388800000,
-    polygon: [
-      { lat: 59.392257, lng: 10.669610 },
-      { lat: 59.392257, lng: 10.670010 },
-      { lat: 59.392057, lng: 10.670010 },
-      { lat: 59.392057, lng: 10.669610 },
-    ]
-  },
-
-  // Elena — 3 captured areas
-  {
-    id: 't7',
-    ownerId: 'user-4',
-    ownerName: 'Elena',
-    area: 0.0005,
-    color: COLORS.opponent3,
-    strokeColor: '#F97316',
-    createdAt: Date.now() - 259200000,
-    polygon: [
-      { lat: 59.389857, lng: 10.667010 },
-      { lat: 59.389857, lng: 10.667410 },
-      { lat: 59.389657, lng: 10.667410 },
-      { lat: 59.389657, lng: 10.667010 },
-    ]
-  },
-  {
-    id: 't8',
-    ownerId: 'user-4',
-    ownerName: 'Elena',
-    area: 0.0005,
-    color: COLORS.opponent3,
-    strokeColor: '#F97316',
-    createdAt: Date.now() - 345600000,
-    polygon: [
-      { lat: 59.394057, lng: 10.663010 },
-      { lat: 59.394057, lng: 10.663410 },
-      { lat: 59.393857, lng: 10.663410 },
-      { lat: 59.393857, lng: 10.663010 },
-    ]
-  },
-  {
-    id: 't9',
-    ownerId: 'user-4',
-    ownerName: 'Elena',
-    area: 0.0005,
-    color: COLORS.opponent3,
-    strokeColor: '#F97316',
     createdAt: Date.now() - 432000000,
     polygon: [
-      { lat: 59.389257, lng: 10.665210 },
-      { lat: 59.389257, lng: 10.665610 },
-      { lat: 59.389057, lng: 10.665610 },
-      { lat: 59.389057, lng: 10.665210 },
-    ]
-  },
-
-  // 5 large regional territories (~3 km2 each), spread around the wider Moss area
-  {
-    id: 't10',
-    ownerId: 'user-2',
-    ownerName: 'Sarah',
-    area: 3.0,
-    color: COLORS.opponent1,
-    strokeColor: '#EF4444',
-    createdAt: Date.now() - 518400000,
-    polygon: [
-      { lat: 59.42278, lng: 10.61472 },
-      { lat: 59.42278, lng: 10.64528 },
-      { lat: 59.40722, lng: 10.64528 },
-      { lat: 59.40722, lng: 10.61472 },
-    ]
-  },
-  {
-    id: 't11',
-    ownerId: 'user-3',
-    ownerName: 'Jonas',
-    area: 3.0,
-    color: COLORS.opponent2,
-    strokeColor: '#8B5CF6',
-    createdAt: Date.now() - 604800000,
-    polygon: [
-      { lat: 59.45278, lng: 10.67472 },
-      { lat: 59.45278, lng: 10.70528 },
-      { lat: 59.43722, lng: 10.70528 },
-      { lat: 59.43722, lng: 10.67472 },
-    ]
-  },
-  {
-    id: 't12',
-    ownerId: 'user-4',
-    ownerName: 'Elena',
-    area: 3.0,
-    color: COLORS.opponent3,
-    strokeColor: '#F97316',
-    createdAt: Date.now() - 691200000,
-    polygon: [
-      { lat: 59.37778, lng: 10.68472 },
-      { lat: 59.37778, lng: 10.71528 },
-      { lat: 59.36222, lng: 10.71528 },
-      { lat: 59.36222, lng: 10.68472 },
-    ]
-  },
-  {
-    id: 't13',
-    ownerId: 'user-2',
-    ownerName: 'Sarah',
-    area: 3.0,
-    color: COLORS.opponent1,
-    strokeColor: '#EF4444',
-    createdAt: Date.now() - 777600000,
-    polygon: [
-      { lat: 59.46778, lng: 10.60472 },
-      { lat: 59.46778, lng: 10.63528 },
-      { lat: 59.45222, lng: 10.63528 },
-      { lat: 59.45222, lng: 10.60472 },
-    ]
-  },
-  {
-    id: 't14',
-    ownerId: 'user-3',
-    ownerName: 'Jonas',
-    area: 3.0,
-    color: COLORS.opponent2,
-    strokeColor: '#8B5CF6',
-    createdAt: Date.now() - 864000000,
-    polygon: [
-      { lat: 59.36778, lng: 10.61472 },
-      { lat: 59.36778, lng: 10.64528 },
-      { lat: 59.35222, lng: 10.64528 },
-      { lat: 59.35222, lng: 10.61472 },
+      { lat: 59.396531, lng: 10.693391 },
+      { lat: 59.392219, lng: 10.698333 },
+      { lat: 59.384804, lng: 10.701399 },
+      { lat: 59.384841, lng: 10.692284 },
+      { lat: 59.386146, lng: 10.677627 },
+      { lat: 59.392122, lng: 10.679496 },
     ]
   }
 ];
