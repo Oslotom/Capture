@@ -13,6 +13,9 @@ import { MapView } from '../components/Map/MapView';
 import { RunSummaryScreen } from './RunSummaryScreen';
 import * as turf from '@turf/turf';
 import { formatDuration, calculatePace, cn } from '../lib/utils';
+import { StatCard } from '../components/UI/StatCard';
+import heroImage from '../assets/hero-image.png';
+
 
 const MOSS_CENTER: LatLng = { lat: 59.391757, lng: 10.666610 };
 
@@ -135,6 +138,9 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
     setCompletedActivity(newActivity);
   };
 
+  const userTerritories = territories.filter(t => t.ownerId === user.id);
+  const totalArea = userTerritories.reduce((sum, t) => sum + t.area, 0);
+
   return (
     <div className="min-h-full pb-32">
       {/* ===== HERO BANNER ===== */}
@@ -154,6 +160,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
               </p>
             </div>
             <div className="flex-shrink-0 -mr-2 -mt-2">
+              <img src={heroImage} alt="Hero" className="w-24" />
             </div>
           </div>
 
@@ -172,11 +179,10 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
       </div>
 
       <div className="p-6 space-y-8">
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold italic">DINE OMRÅDER</h2>
-          <Card className="h-64 w-full overflow-hidden border-none shadow-sm">
-            <MapView territories={territories} />
-          </Card>
+        <div className="grid grid-cols-3 gap-4">
+          <StatCard label="KM² KAPRET" value={totalArea.toFixed(2)} />
+          <StatCard label="ANTALL LØP" value={user.activities.length} />
+          <StatCard label="OMRÅDER" value={userTerritories.length} />
         </div>
       </div>
 

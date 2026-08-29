@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Polygon, Polyline, useMap, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Territory, LatLng } from '../../types';
+import { Territory, LatLng, User } from '../../types';
 import { COLORS } from '../../constants';
 import { useEffect } from 'react';
 import { cn } from '../../lib/utils';
@@ -15,6 +15,7 @@ interface MapViewProps {
   zoom?: number;
   zoomControl?: boolean;
   interactive?: boolean;
+  user?: User;
 }
 
 // Helper to keep map in sync with state
@@ -26,7 +27,7 @@ function ChangeView({ center }: { center: LatLng }) {
   return null;
 }
 
-export const MapView = ({ center = { lat: 59.9139, lng: 10.7522 }, territories = [], activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false, interactive = true }: MapViewProps) => {
+export const MapView = ({ center = { lat: 59.9139, lng: 10.7522 }, territories = [], activeRoute, currentPosition, onTerritoryClick, className, zoom = 15, zoomControl = false, interactive = true, user }: MapViewProps) => {
   return (
     <MapContainer
       center={[center.lat, center.lng]}
@@ -48,21 +49,24 @@ export const MapView = ({ center = { lat: 59.9139, lng: 10.7522 }, territories =
       />
       <ChangeView center={center} />
 
-      {territories.map((t) => (
-        <Polygon
-          key={t.id}
-          positions={t.polygon.map(p => [p.lat, p.lng])}
-          pathOptions={{
-            fillColor: t.color,
-            fillOpacity: 0.1,
-            color: t.strokeColor,
-            weight: 3
-          }}
-          eventHandlers={{
-            click: () => onTerritoryClick?.(t)
-          }}
-        />
-      ))}
+      {territories.map((t) => {
+        const isOwner = user && t.ownerId === user.id;
+        return (
+          <Polygon
+            key={t.id}
+            positions={t.polygon.map(p => [p.lat, p.lng])}
+            pathOptions={{
+              fillColor: t.color,
+              fillOpacity: isOwner ? 0.2 : 0.1,
+              color: t.strokeColor,
+              weight: 3
+            }}
+            eventHandlers={{
+              click: () => onTerritoryClick?.(t)
+            }}
+          />
+        );
+      })}
 
       {activeRoute && activeRoute.length > 1 && (
         <Polyline

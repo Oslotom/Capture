@@ -15,6 +15,11 @@ export const COLORS = {
   opponent1: 'rgba(244, 63, 94, 0.22)', // Rose
   opponent2: 'rgba(20, 184, 166, 0.22)', // Teal
   opponent3: 'rgba(139, 92, 246, 0.22)', // Violet
+  opponent4: 'rgba(234, 179, 8, 0.22)', // Yellow
+  opponent5: 'rgba(239, 68, 68, 0.22)', // Red
+  opponent6: 'rgba(59, 130, 246, 0.22)', // Blue
+  opponent7: 'rgba(34, 197, 94, 0.22)', // Green
+  opponent8: 'rgba(249, 115, 22, 0.22)', // Orange
 };
 
 export const LEVELS = [
@@ -148,6 +153,81 @@ export const MOCK_TERRITORIES: Territory[] = [
       { lat: 59.384841, lng: 10.692284 },
       { lat: 59.386146, lng: 10.677627 },
       { lat: 59.392122, lng: 10.679496 },
+    ]
+  },
+  {
+    id: 't7',
+    ownerId: 'user-5',
+    ownerName: 'Liam',
+    area: 1.5,
+    color: COLORS.opponent4,
+    strokeColor: '#EAB308',
+    createdAt: Date.now() - 500000000,
+    polygon: [
+      { lat: 59.43, lng: 10.65 },
+      { lat: 59.425, lng: 10.66 },
+      { lat: 59.42, lng: 10.655 },
+      { lat: 59.425, lng: 10.645 },
+    ]
+  },
+  {
+    id: 't8',
+    ownerId: 'user-6',
+    ownerName: 'Olivia',
+    area: 2.0,
+    color: COLORS.opponent5,
+    strokeColor: '#EF4444',
+    createdAt: Date.now() - 550000000,
+    polygon: [
+      { lat: 59.4, lng: 10.7 },
+      { lat: 59.395, lng: 10.71 },
+      { lat: 59.39, lng: 10.705 },
+      { lat: 59.395, lng: 10.695 },
+    ]
+  },
+  {
+    id: 't9',
+    ownerId: 'user-7',
+    ownerName: 'Noah',
+    area: 1.2,
+    color: COLORS.opponent6,
+    strokeColor: '#3B82F6',
+    createdAt: Date.now() - 600000000,
+    polygon: [
+      { lat: 59.41, lng: 10.6 },
+      { lat: 59.405, lng: 10.61 },
+      { lat: 59.4, lng: 10.605 },
+      { lat: 59.405, lng: 10.595 },
+    ]
+  },
+  {
+    id: 't10',
+    ownerId: 'user-8',
+    ownerName: 'Emma',
+    area: 1.8,
+    color: COLORS.opponent7,
+    strokeColor: '#22C55E',
+    createdAt: Date.now() - 650000000,
+    polygon: [
+      { lat: 59.44, lng: 10.62 },
+      { lat: 59.435, lng: 10.63 },
+      { lat: 59.43, lng: 10.625 },
+      { lat: 59.435, lng: 10.615 },
+    ]
+  },
+  {
+    id: 't11',
+    ownerId: 'user-9',
+    ownerName: 'Ava',
+    area: 2.2,
+    color: COLORS.opponent8,
+    strokeColor: '#F97316',
+    createdAt: Date.now() - 700000000,
+    polygon: [
+      { lat: 59.38, lng: 10.65 },
+      { lat: 59.375, lng: 10.66 },
+      { lat: 59.37, lng: 10.655 },
+      { lat: 59.375, lng: 10.645 },
     ]
   }
 ];
