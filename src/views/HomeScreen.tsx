@@ -375,7 +375,7 @@ export const HomeScreen = ({ onTrackingChange }: { onTrackingChange: (isTracking
                 variant="secondary"
                 size="sm"
                 className="rounded-full w-12 h-12 p-0 shadow-xl bg-white text-black border-none"
-                onClick={() => {/* map follows the simulated position automatically */}}
+                onClick={() => {/* map follows the simulated position automatically */ }}
               >
                 <Crosshair size={20} />
               </Button>
